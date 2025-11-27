@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zetech University - Online Voting System</title>
+    <style>
+        :root {
+            --primary: #003366;
+            --secondary: #FF6600;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        .auth-buttons button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .auth-buttons button:hover {
+            background-color: #e55a00;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0,51,102,0.8), rgba(0,51,102,0.9)), url('https://via.placeholder.com/1200x400') no-repeat center center/cover;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #e55a00;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .section {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .login-container, .voting-container, .results-container, .admin-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .candidate-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+        }
+        
+        .candidate-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+            background-color: #eee;
+        }
+        
+        .candidate-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .candidate-info {
+            flex: 1;
+        }
+        
+        .candidate-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .candidate-position {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .vote-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .vote-btn:hover {
+            background-color: #002244;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .results-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .results-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--secondary);
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                margin-top: 15px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+            }
+            
+            .footer-links a {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <!-- Placeholder for Zetech University logo -->
+                <div style="width: 50px; height: 50px; background-color: white; display: flex; align-items: center; justify-content: center; border-radius: 5px; margin-right: 15px;">
+                    <span style="color: var(--primary); font-weight: bold;">ZU</span>
+                </div>
+                <h1>Zetech University Voting System</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#voting">Vote</a></li>
+                    <li><a href="#results">Results</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button id="loginBtn">Login</button>
+                <button id="registerBtn">Register</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h2>Zetech University Student Elections</h2>
+            <p>Exercise your democratic right to vote for your student leaders in a secure, transparent, and efficient online voting system.</p>
+            <a href="#voting" class="btn">Vote Now</a>
+            <a href="#results" class="btn btn-outline">View Results</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <h2 class="section-title">Why Use Our Online Voting System?</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>Your vote is confidential and protected with advanced security measures.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast & Efficient</h3>
+                    <p>Vote from anywhere in minutes without long queues or paperwork.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Results</h3>
+                    <p>View election results instantly after voting closes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voting Section -->
+    <section class="section" id="voting">
+        <div class="container">
+            <h2 class="section-title">Cast Your Vote</h2>
+            <div class="voting-container">
+                <h3>Student Leadership Elections 2023</h3>
+                <p>Select your preferred candidate for each position:</p>
+                
+                <div class="candidate-list" id="candidateList">
+                    <!-- Candidate cards will be dynamically generated here -->
+                </div>
+                
+                <button class="btn" id="submitVote" style="width: 100%; margin-top: 20px;">Submit Your Vote</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="section" id="results">
+        <div class="container">
+            <h2 class="section-title">Election Results</h2>
+            <div class="results-container">
+                <h3>Live Results</h3>
+                <p>Results will be displayed after voting closes.</p>
+                
+                <table class="results-table" id="resultsTable">
+                    <!-- Results will be dynamically generated here -->
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container footer-content">
+            <div class="logo">
+                <div style="width: 40px; height: 40px; background-color: white; display: flex; align-items: center; justify-content: center; border-radius: 5px; margin-right: 10px;">
+                    <span style="color: var(--primary); font-weight: bold;">ZU</span>
+                </div>
+                <h2>Zetech University</h2>
+            </div>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#voting">Vote</a>
+                <a href="#results">Results</a>
+                <a href="#contact">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="copyright">
+                &copy; 2023 Zetech University. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Student Login</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">Don't have an account? <a href="#" id="showRegister">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Student Registration</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regStudentId">Student ID</label>
+                    <input type="text" id="regStudentId" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="course">Course</label>
+                    <input type="text" id="course" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Register</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" id="showLogin">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- Vote Confirmation Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Your Vote</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="confirmContent">
+                <!-- Confirmation details will be displayed here -->
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <button class="btn" id="cancelVote">Cancel</button>
+                <button class="btn" id="finalizeVote" style="background-color: var(--success);">Confirm Vote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - In a real application, this would come from a database
+        const positions = [
+            { id: 1, name: "Student President" },
+            { id: 2, name: "Academic Secretary" },
+            { id: 3, name: "Sports Representative" }
+        ];
+
+        const candidates = [
+            { id: 1, name: "John Kamau", position: "Student President", photo: "https://via.placeholder.com/80", manifesto: "Focused on improving student welfare and academic resources." },
+            { id: 2, name: "Mary Wanjiku", position: "Student President", photo: "https://via.placeholder.com/80", manifesto: "Committed to transparency and student engagement." },
+            { id: 3, name: "David Ochieng", position: "Academic Secretary", photo: "https://via.placeholder.com/80", manifesto: "Dedicated to enhancing the academic experience for all students." },
+            { id: 4, name: "Grace Auma", position: "Academic Secretary", photo: "https://via.placeholder.com/80", manifesto: "Focused on improving library resources and study spaces." },
+            { id: 5, name: "Peter Mwangi", position: "Sports Representative", photo: "https://via.placeholder.com/80", manifesto: "Committed to expanding sports facilities and organizing more tournaments." },
+            { id: 6, name: "Sarah Atieno", position: "Sports Representative", photo: "https://via.placeholder.com/80", manifesto: "Dedicated to promoting inclusivity in sports activities." }
+        ];
+
+        // Initialize selected candidates object
+        let selectedCandidates = {};
+
+        // DOM Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const confirmModal = document.getElementById('confirmModal');
+        const closeModals = document.querySelectorAll('.close-modal');
+        const showRegister = document.getElementById('showRegister');
+        const showLogin = document.getElementById('showLogin');
+        const candidateList = document.getElementById('candidateList');
+        const submitVoteBtn = document.getElementById('submitVote');
+        const confirmContent = document.getElementById('confirmContent');
+        const cancelVoteBtn = document.getElementById('cancelVote');
+        const finalizeVoteBtn = document.getElementById('finalizeVote');
+        const resultsTable = document.getElementById('resultsTable');
+
+        // Event Listeners
+        loginBtn.addEventListener('click', () => showModal(loginModal));
+        registerBtn.addEventListener('click', () => showModal(registerModal));
+        
+        closeModals.forEach(btn => {
+            btn.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+                registerModal.style.display = 'none';
+                confirmModal.style.display = 'none';
+            });
+        });
+        
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'flex';
+        });
+        
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'flex';
+        });
+        
+        submitVoteBtn.addEventListener('click', showVoteConfirmation);
+        cancelVoteBtn.addEventListener('click', () => confirmModal.style.display = 'none');
+        finalizeVoteBtn.addEventListener('click', submitVote);
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCandidates();
+            renderResults();
+        });
+
+        // Functions
+        function showModal(modal) {
+            modal.style.display = 'flex';
+        }
+
+        function renderCandidates() {
+            candidateList.innerHTML = '';
+            
+            positions.forEach(position => {
+                const positionCandidates = candidates.filter(candidate => candidate.position === position.name);
+                
+                if (positionCandidates.length > 0) {
+                    const positionHeader = document.createElement('h4');
+                    positionHeader.textContent = position.name;
+                    positionHeader.style.marginTop = '20px';
+                    positionHeader.style.marginBottom = '10px';
+                    positionHeader.style.color = 'var(--primary)';
+                    candidateList.appendChild(positionHeader);
+                    
+                    positionCandidates.forEach(candidate => {
+                        const candidateCard = document.createElement('div');
+                        candidateCard.className = 'candidate-card';
+                        
+                        candidateCard.innerHTML = `
+                            <div class="candidate-photo">
+                                <img src="${candidate.photo}" alt="${candidate.name}">
+                            </div>
+                            <div class="candidate-info">
+                                <div class="candidate-name">${candidate.name}</div>
+                                <div class="candidate-position">${candidate.position}</div>
+                                <p>${candidate.manifesto}</p>
+                            </div>
+                            <button class="vote-btn" data-candidate-id="${candidate.id}" data-position="${candidate.position}">Vote</button>
+                        `;
+                        
+                        candidateList.appendChild(candidateCard);
+                    });
+                }
+            });
+            
+            // Add event listeners to vote buttons
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const candidateId = this.getAttribute('data-candidate-id');
+                    const position = this.getAttribute('data-position');
+                    
+                    // Deselect any previously selected candidate for this position
+                    document.querySelectorAll(`.vote-btn[data-position="${position}"]`).forEach(button => {
+                        button.style.backgroundColor = 'var(--primary)';
+                    });
+                    
+                    // Select this candidate
+                    this.style.backgroundColor = 'var(--success)';
+                    
+                    // Store the selection
+                    selectedCandidates[position] = candidateId;
+                });
+            });
+        }
+
+        function showVoteConfirmation() {
+            // Check if user has selected candidates for all positions
+            if (Object.keys(selectedCandidates).length !== positions.length) {
+                alert('Please select a candidate for each position before submitting your vote.');
+                return;
+            }
+            
+            confirmContent.innerHTML = '<h4>Please confirm your selections:</h4>';
+            
+            for (const [position, candidateId] of Object.entries(selectedCandidates)) {
+                const candidate = candidates.find(c => c.id == candidateId);
+                confirmContent.innerHTML += `
+                    <div style="margin: 10px 0; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <strong>${position}:</strong> ${candidate.name}
+                    </div>
+                `;
+            }
+            
+            confirmContent.innerHTML += '<p style="margin-top: 15px;">Once confirmed, your vote cannot be changed.</p>';
+            
+            confirmModal.style.display = 'flex';
+        }
+
+        function submitVote() {
+            // In a real application, this would send the vote data to a server
+            alert('Thank you for voting! Your selections have been recorded.');
+            confirmModal.style.display = 'none';
+            
+            // Reset selections
+            selectedCandidates = {};
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.style.backgroundColor = 'var(--primary)';
+            });
+            
+            // Update results display
+            renderResults();
+        }
+
+        function renderResults() {
+            // In a real application, this would fetch actual results from a server
+            // For demo purposes, we'll generate random results
+            resultsTable.innerHTML = `
+                <tr>
+                    <th>Position</th>
+                    <th>Candidate</th>
+                    <th>Votes</th>
+                    <th>Percentage</th>
+                </tr>
+            `;
+            
+            positions.forEach(position => {
+                const positionCandidates = candidates.filter(candidate => candidate.position === position.name);
+                
+                positionCandidates.forEach(candidate => {
+                    // Generate random vote count for demo
+                    const votes = Math.floor(Math.random() * 100) + 1;
+                    const percentage = Math.floor(Math.random() * 100) + 1;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${position.name}</td>
+                        <td>${candidate.name}</td>
+                        <td>${votes}</td>
+                        <td>
+                            ${percentage}%
+                            <div class="progress-bar">
+                                <div class="progress" style="width: ${percentage}%"></div>
+                            </div>
+                        </td>
+                    `;
+                    
+                    resultsTable.appendChild(row);
+                });
+            });
+        }
+
+        // Form submissions
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real application, this would validate credentials with a server
+            alert('Login successful!');
+            loginModal.style.display = 'none';
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real application, this would send registration data to a server
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            alert('Registration successful! You can now login.');
+            registerModal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

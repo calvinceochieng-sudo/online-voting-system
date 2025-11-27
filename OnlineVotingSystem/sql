@@ -1,0 +1,62 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS zetech_voting_system;
+USE zetech_voting_system;
+
+-- Students table
+CREATE TABLE IF NOT EXISTS students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id VARCHAR(20) UNIQUE NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15),
+    course VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    has_voted BOOLEAN DEFAULT FALSE,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Positions table
+CREATE TABLE IF NOT EXISTS positions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    max_candidates INT DEFAULT 1
+);
+
+-- Candidates table
+CREATE TABLE IF NOT EXISTS candidates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    position_id INT NOT NULL,
+    photo_url VARCHAR(255),
+    manifesto TEXT,
+    FOREIGN KEY (position_id) REFERENCES positions(id) ON DELETE CASCADE
+);
+
+-- Votes table
+CREATE TABLE IF NOT EXISTS votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    candidate_id INT NOT NULL,
+    position_id INT NOT NULL,
+    vote_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE,
+    FOREIGN KEY (position_id) REFERENCES positions(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_student_position (student_id, position_id)
+);
+
+-- Insert sample positions
+INSERT IGNORE INTO positions (id, title, description) VALUES
+(1, 'Student President', 'The overall student leader representing all students'),
+(2, 'Academic Secretary', 'Responsible for academic affairs and representation'),
+(3, 'Sports Representative', 'In charge of sports activities and representation');
+
+-- Insert sample candidates
+INSERT IGNORE INTO candidates (id, name, position_id, manifesto) VALUES
+(1, 'John Kamau', 1, 'Focused on improving student welfare and academic resources.'),
+(2, 'Mary Wanjiku', 1, 'Committed to transparency and student engagement.'),
+(3, 'David Ochieng', 2, 'Dedicated to enhancing the academic experience for all students.'),
+(4, 'Grace Auma', 2, 'Focused on improving library resources and study spaces.'),
+(5, 'Peter Mwangi', 3, 'Committed to expanding sports facilities and organizing more tournaments.'),
+(6, 'Sarah Atieno', 3, 'Dedicated to promoting inclusivity in sports activities.');
